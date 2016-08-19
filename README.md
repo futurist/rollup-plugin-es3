@@ -4,9 +4,10 @@
 
 [Rollup](https://github.com/rollup/rollup) plugin, to make it more compatible with ES3.
 
-Currently it's only do one thing:
+Currently it's only do 2 things:
 
-- Remove Object.defineProperty of __esModule part
+- Remove Object.defineProperty of __esModule part (rollup issue [#750](https://github.com/rollup/rollup/issues/750))
+- Remove Object.freeze (issue #1)
 
 ## Install
 
@@ -26,5 +27,14 @@ rollup({
 		es3()
 	]
 })
+```
+
+## Option
+
+``` javascript
+// pass the list of removal
+	plugins: [
+		es3(['defineProperty', 'freeze'])
+	]
 ```
 

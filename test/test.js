@@ -9,6 +9,7 @@ function file(p) {
 }
 
 describe('rollup-plugin-es3', () => {
+
   it('should remove __esModule', () => {
     return rollup({
       entry: file('files/source.js'),
@@ -17,7 +18,31 @@ describe('rollup-plugin-es3', () => {
       const result = bundle.generate({
         format: 'cjs'
       })
-      assert.equal(result.code, fs.readFileSync(file('files/cjs.js'), 'utf-8'))
+      assert.equal(result.code, fs.readFileSync(file('files/defineProperty.cjs.js'), 'utf-8'))
+    })
+  })
+
+  it('should remove freeze', () => {
+    return rollup({
+      entry: file('files/freeze.es.js'),
+      plugins: [ es3() ]
+    }).then(bundle => {
+      const result = bundle.generate({
+        format: 'cjs'
+      })
+      assert.equal(result.code, fs.readFileSync(file('files/freeze.cjs.js'), 'utf-8'))
+    })
+  })
+
+  it('should remove non with empty array', () => {
+    return rollup({
+      entry: file('files/freeze.es.js'),
+      plugins: [ es3([]) ]
+    }).then(bundle => {
+      const result = bundle.generate({
+        format: 'cjs'
+      })
+      assert.notEqual(result.code, fs.readFileSync(file('files/freeze.cjs.js'), 'utf-8'))
     })
   })
 

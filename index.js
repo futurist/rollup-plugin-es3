@@ -15,7 +15,7 @@ export default function es3 (removeArr) {
           code = code.replace(removeHash[k][0], removeHash[k][1])
         }
       }
-      return code
+      return { code, map: { mappings: '' } }
     }
   }
 }

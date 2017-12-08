@@ -32,5 +32,8 @@
   "devDependencies": {
     "mocha": "^3.0.2",
     "rollup": "^0.34.10"
+  },
+  "dependencies": {
+    "magic-string": "^0.22.4"
   }
 }

@@ -1,21 +1,38 @@
-// Make rollup compatible with ES3, remove Object.defineProperty of __esModule part
+import MagicString from 'magic-string';
 
-function es3 (removeArr) {
-  var removeHash = {
+// Make rollup compatible with ES3, remove Object.defineProperty of __esModule part
+function es3 ({ remove, sourceMap, sourcemap } = {}) {
+  const removeHash = {
     'defineProperty': [/^\s*Object\.defineProperty\(\s*exports,\s*'__esModule'.*\n$/mg, ''],
     'freeze': [/Object.freeze\s*\(\s*([^)]*)\)/g, '$1']
   }
-  if (!Array.isArray(removeArr)) removeArr = Object.keys(removeHash)
+  if (!Array.isArray(remove)) remove = Object.keys(removeHash)
 
   return {
     name: 'es3',
     transformBundle: function (code) {
-      for (var k in removeHash) {
-        if (removeArr.indexOf(k) > -1) {
-          code = code.replace(removeHash[k][0], removeHash[k][1])
+      const magicString = new MagicString(code);
+      for (let k in removeHash) {
+        if (remove.indexOf(k) > -1) {
+          const [pattern, value = ''] = removeHash[k];
+          let match, start, end, replacement;
+
+          while ((match = pattern.exec(code))) {
+            start       = match.index;
+            end         = start + match[0].length;
+            replacement = value.toString();
+            for (let i = 1; i < match.length; i++) {
+              replacement = replacement.replace(`$${i}`, match[i]);
+            }
+            magicString.overwrite(start, end, replacement);
+          }
         }
       }
-      return { code, map: { mappings: '' } }
+      return {
+        code: magicString.toString(),
+        map:  (sourceMap !== false && sourcemap !== false) ?
+          magicString.generateMap({ hires: true }) : { mappings: '' }
+      }
     }
   }
 }

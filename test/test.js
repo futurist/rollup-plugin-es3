@@ -37,12 +37,26 @@ describe('rollup-plugin-es3', () => {
   it('should remove non with empty array', () => {
     return rollup({
       entry: file('files/freeze.es.js'),
-      plugins: [ es3([]) ]
+      plugins: [ es3({ remove: [] }) ]
     }).then(bundle => {
       const result = bundle.generate({
         format: 'cjs'
       })
       assert.notEqual(result.code, fs.readFileSync(file('files/freeze.cjs.js'), 'utf-8'))
+    })
+  })
+
+  it ('should produce source map', () => {
+    return rollup({
+      entry: file('files/freeze.es.js'),
+      plugins: [ es3() ],
+      sourceMap: true
+    }).then(bundle => {
+      const result = bundle.generate({
+        format: 'cjs',
+        sourceMap: true
+      });
+      assert.ok(result.map.mappings)
     })
   })
 

@@ -34,7 +34,6 @@ rollup({
 ``` javascript
 // pass the list of removal
 	plugins: [
-		es3(['defineProperty', 'freeze'])
+		es3({ remove: ['defineProperty', 'freeze'] })
 	]
 ```
-
